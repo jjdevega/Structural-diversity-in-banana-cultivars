@@ -14,8 +14,10 @@ Ancestry determination (sometimes called ancestry mosaics) are typically built b
 These approaches are costly, both economically (sequencing costs) and time (complex bioinformatic analysis). 
 
 By contrast, we believe these alignment-based methods (RAA and Relative Coverage) offer several advantages over other methods. 
-- The alignment-based methods do not require sequencing a large number of donors to find private SNPs exclusive to each donor gene pools.- The alignment-based methods can be used in closely related gene pools, even within one single species, where private SNPs can be hard to find because of recent divergence. This has allowed us to identify introgressions between indica and japonica rice (Higgins et al. 2021), or between Andean and Mesoamerican beans (in prep).
-- The alignment-base methods can be easily scaled up, as they do not require SNP calling and analysis, allowing to quick incorporation in the studies of new diversity panels and the increasing number of long-read genome assemblies. On the other hand, the main disadvantage of Relative Coverage is it requires experience to distinguish introgressions in low donor ratios.
+- The alignment-based methods do not require sequencing a large number of donors to find private SNPs exclusive to each donor gene pools.
+- - The alignment-based methods can be used in closely related gene pools, even within one single species, where private SNPs can be hard to find because of recent divergence. This has allowed us to identify introgressions between indica and japonica rice (Higgins et al. 2021), or between Andean and Mesoamerican beans (in prep).
+- The alignment-base methods can be easily scaled up, as they do not require SNP calling and analysis, allowing to quick incorporation in the studies of new diversity panels and the increasing number of long-read genome assemblies.
+- On the other hand, the main disadvantage of Relative Coverage is it requires experience to distinguish introgressions in low donor ratios.
 
 
 ## Code used in the paper [citation TBA]
