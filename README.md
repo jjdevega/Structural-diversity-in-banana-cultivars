@@ -5,11 +5,11 @@ This repository contains the code used in the analysis of our paper Higgins et a
 
 **We developed two novel scalable alignment-based methods, named Relative Averaged Alignment (RAA) and Relative Coverage (RC), to infer subgenome composition (AA, AAB, etc.) and interspecific recombination.** In Higgins et al. [citation TBA] we demonstrated RAA and Relative Coverage can *identify subgenome composition and introgressions* with similar results to more complex approaches that rely on SNP databases, which require sequencing a panel of wild ancestors to find private SNPs. Our methods can be used without a panel of ancestors as rely on alignment from the hybrids or allopolyploids in the ancestor reference genomes.
 
-# How to obtain help
+## How to obtain help
 If you need help to use or adapt any of these scripts or to develop your own code on these method ideas, please open a issue in this repository. This will help to create a FAQ of benefit to others.
 
 
-# Advantages of alignment-based methods to identify subgenome composition and introgressions:
+## Advantages of alignment-based methods to identify subgenome composition and introgressions:
 Ancestry determination (sometimes called ancestry mosaics) are typically built by first identifying SNPs exclusively present in each of the (wild) ancestral subspecies (private SNPs). 
 These approaches are costly, both economically (sequencing costs) and time (complex bioinformatic analysis). 
 
@@ -28,7 +28,7 @@ The paper's code is organised into two subfolders:
 The code is uploaded as it is, and will require changes to adapt to your needs.
 
 
-## Relative Coverage (RC): Explanation and protocol
+### Relative Coverage (RC): Explanation and protocol
 
 
 We used comparisons of read depth, which we called Relative Coverage, to identify introgressions. 
