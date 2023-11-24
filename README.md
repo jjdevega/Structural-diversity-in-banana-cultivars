@@ -55,3 +55,5 @@ We established a new method, called RAA, by quantifying the normalised relative 
 - All-vs-all every 100 Kbp windows in the A-genome and B-genome were aligned to each other using minimap2 v2.22 (-x asm10) to identify homologous windows
 - Plot using R and ggplot
 
+
+## Plotting 
