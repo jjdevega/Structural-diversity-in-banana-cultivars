@@ -13,8 +13,12 @@ In Higgins et al. [citation TBA] we demonstrated RAA and Relative Coverage can *
 [images and plots to be added here]
 
 
-## How to obtain help
+## Use and Cite: How to obtain help
+
+Please reuse our code and ideas. If you use anything in this repository please cite: Higgins et al. [citation TBA]
+
 If you need help to use or adapt any of these scripts or to develop your own code on these method ideas, please open a issue in this repository. This will help to create a FAQ of benefit to others.
+
 
 
 ## Advantages of alignment-based methods
