@@ -28,21 +28,21 @@ The paper's code is organised into two subfolders:
 The code is uploaded as it is, and will require changes to adapt to your needs.
 
 
-### Relative Coverage (RC): Explanation and protocol
+## Relative Coverage (RC): Explanation and protocol
 
 
 We used comparisons of read depth, which we called Relative Coverage, to identify introgressions. 
 
 -Preprocessing reads to obtain clean trimmed reads, then align each hybrid to each ancestor reference, one at the time, with BWA-MEM
-'''
+```
 for sample in $(cat sample_list.txt); do
   for reference in $(cat reference_list.txt); do
     bwa mem ref.index sample_r1.fq [sample_r2.fq] | samtools sort > alignments_sample_ref.bam
   done
 done
-'''
+```
 
-### RAA
+## RAA
 We established a new method, called RAA, by quantifying the normalised relative alignment from each accession to three reference banana genomes, which are representative of the A, B and S genome donors. We called this normalised alignment metric “Relative averaged alignment” (RAA). The RAA accounts for the technical variation between samples and reference bias, ie. the phylogenetic distance between a variety and a genome reference. 
 
 
