@@ -1,4 +1,4 @@
-# Characterising subgenome recombination and chromosomal imbalances in banana varietal lineages
+# Characterising subgenome recombination and chromosomal imbalances (introgressions)
 
 
 This repository contains the code used in the analysis of our paper Higgins et al. [citation TBA], where we delimited population structure and clonal lineages in a diversity panel of 188 banana and plantain accessions from the most common cultivars using admixture, principal component, and phylogenetic analyses. 
