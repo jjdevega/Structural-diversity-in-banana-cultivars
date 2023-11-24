@@ -33,7 +33,7 @@ The code is uploaded as it is, and will require changes to adapt to your needs.
 
 We used comparisons of read depth, which we called Relative Coverage, to identify introgressions. 
 
--Preprocessing reads to obtain clean trimmed reads, then align each hybrid to each ancestor reference, one at the time, with BWA-MEM
+- Preprocessing reads to obtain clean trimmed reads, then align each hybrid to each ancestor reference, one at the time, with BWA-MEM
 ```
 for sample in $(cat sample_list.txt); do
   for reference in $(cat reference_list.txt); do
