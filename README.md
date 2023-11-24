@@ -17,7 +17,7 @@ In Higgins et al. [citation TBA] we demonstrated RAA and Relative Coverage can *
 If you need help to use or adapt any of these scripts or to develop your own code on these method ideas, please open a issue in this repository. This will help to create a FAQ of benefit to others.
 
 
-## Advantages of alignment-based methods to identify subgenome composition and introgressions:
+## Advantages of alignment-based methods
 Ancestry determination (sometimes called ancestry mosaics) are typically built by first identifying SNPs exclusively present in each of the (wild) ancestral subspecies (private SNPs). 
 These approaches are costly, both economically (sequencing costs) and time (complex bioinformatic analysis). 
 
@@ -38,7 +38,7 @@ The paper's code is organised into two subfolders:
 The code is uploaded as it is, and will require changes to adapt to your needs.
 
 
-## Relative Coverage (RC): Explanation and protocol
+## Relative Coverage (RC): Protocol
 
 
 We used comparisons of read depth, which we called Relative Coverage, to identify introgressions. 
@@ -52,7 +52,7 @@ for sample in $(cat sample_list.txt); do
 done
 ```
 
-## RAA
+## RAA: Protocol
 We established a new method, called RAA, by quantifying the normalised relative alignment from each accession to three reference banana genomes, which are representative of the A, B and S genome donors. We called this normalised alignment metric “Relative averaged alignment” (RAA). The RAA accounts for the technical variation between samples and reference bias, ie. the phylogenetic distance between a variety and a genome reference. 
 
 
@@ -64,4 +64,4 @@ We established a new method, called RAA, by quantifying the normalised relative 
 - Plot using R and ggplot
 
 
-## Plotting 
+## Plotting
