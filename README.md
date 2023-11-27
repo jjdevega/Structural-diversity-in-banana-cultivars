@@ -68,7 +68,7 @@ for myID in $(sample_list.txt); do
 bwa mem -M -k 35 -R "@RG\tID:${myID}\tSM:${myID}" -t 1 AABB.fa \
  <(gzip -dc ${myID}/basic/*_R1_val_1.fq.gz) <(gzip -dc ${myID}/basic/*_R2_val_2.fq.gz) \
 | samtools view -@ 1 -b -S -h - | samtools sort -@ 1 -T ${myID}.tmp -o ${myID}_AABB_sort.bam;
-done
+done;
 ```
 - BAM files were sorted and duplicated reads were removed. Only uniquely mapped reads were retained by excluding reads with the tags 'XA:Z:' and 'SA:Z:', and further filtered to retain only properly mapped paired reads (-f 0x2).
 
