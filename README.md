@@ -37,7 +37,7 @@ By contrast, we believe these alignment-based methods (RAA and Relative Coverage
 
 
 
-## Relative Coverage (RC): Protocol
+## Relative Coverage (RC): Step by step
 
 
 We used comparisons of read depth, which we called Relative Coverage, to to identify introgressions. It is key to notice that we do not use SNPs. The method builds on the idea that the reads in hybrid, e.g. AAB, need to map twice to the A reference for each one's alignment to the B reference *on average*, and any deviation from this expectation is indicative of introgressions. 
@@ -113,20 +113,17 @@ We used comparisons of read depth, which we called Relative Coverage, to to iden
   library(stringr)
 
   #READ THE OUTPUT FROM BEDTOOLS MAP, NORMALISE IT FOR EACH SUBGENOME, 
-  #AND TRANSFORM ONE OF SUBGENOME AS NEGATIVE VALUES TO PLOT BELOW
+  #AND TRANSFORM ONE SUBGENOME AS NEGATIVE VALUES TO PLOT BELOW THE OTHER
   all<- read.delim ("hybrid1_unique.bam.bedgraph_median_cov.txt", header = FALSE)
   colnames(all) <- c("chrom","start","end","cov")
-
   all$cov <- as.numeric(all$cov)
   all$cov[is.na(all$cov)] <- 1
-
 
   AAchr<- all %>% filter(grepl('AA_chr', chrom)) %>% mutate(chrom = str_replace(chrom,"AA_chr","chr"))>
   AA_chr$covNormByMean <- AA_chr$cov/mean(AA_chr$cov)  #normalise by dividing by the total average
 
   BBchr<- all %>% filter(grepl('BB_chr', chrom)) %>% mutate(chrom = str_replace(chrom,"BB_chr","chr"))>
   BB_chr$covNormByMean <- BB_chr$cov/mean(BB_chr$cov)  #normalise by dividing by the total average
-
   make.negative <- function(x) -1*abs(x) #make all BB negative for plotting
   BBchr.negative <- cbind(BBchr,"cov_neg" = make.negative(BB_chr$covNormByMean))
 
@@ -136,10 +133,10 @@ We used comparisons of read depth, which we called Relative Coverage, to to iden
   colnames(minimap) <- c("uniqID","inAA_chr","inAA_start","inAA_stop")
   
   
-  #join left both dataframes
-  #create UNIQid field needed for join() in bed format, as chr:startbp-stopbp
+  #join left both data frames
+  #create UNIQid field needed for merge() in bed format, as chr:startbp-stopbp
   BBchr.negative$uniqID <- paste0(BBchr.negative$chrom,":",BBchr.negative$start,"-",BBchr.negative$end)
-  BBchr.negative.join <- merge(x=BBchr.negative, y=minimap, by="uniqID", all.x = FALSE) #false to ignore BBs without AA homologous
+  BBchr.negative.join <- merge(x=BBchr.negative, y=minimap, by="uniqID", all.x = FALSE) #false to ignore BBs without AA homologous -join left-
 
   #PLOT
   AA_chr$facet <- Achr01$chrom
@@ -160,12 +157,32 @@ We used comparisons of read depth, which we called Relative Coverage, to to iden
 NOTE: When the sequence is equal between the two ancestral genomes (e.g. no sequence divergence between A and B ancestors), some reads mapping over the conserved sequences can be assigned to the incorrect donor, so generating a background signal. On average, over a 100Kb window, there is plenty of variation between the references to distinguish background noise from the proportion of mapping reads evaluated, so it does not affect the method significantly. 
 
 
-## RAA: Protocol
+## relative averaged alignment (RAA): Step by step
 We established a new method, called RAA, by quantifying the normalised relative alignment from each accession to three reference banana genomes, which are representative of the A, B and S genome donors. We called this normalised alignment metric “Relative averaged alignment” (RAA). The RAA accounts for the technical variation between samples and reference bias, ie. the phylogenetic distance between a variety and a genome reference. 
 
 
-- Preprocessing reads to obtained clean trimmed reads, then 
+- Preprocessing reads to obtain clean trimmed reads (e.g. trim_galore), then the processed reads were aligned using BWA MEM v0.7.17 (Li, 2013), with the options -M and -R to define read-groups against each genome reference.
+  ```
+  #bwa-0.7.17, samtools-1.7
 
+  for reference in $(cat ref_fasta_list.txt); do
+    bwa index reference reference.idx
+    for myID in $(hybrids_list.txt); do
+      bwa mem -M -R "@RG\tID:${myID}\tSM:${myID}" -t 1 reference.idx ${myID}_1.fq.gz ${myID}_2.fq.gz | \
+      samtools view -@ 1 -b -S -h - | samtools sort -@ 1 -T ${myID}.tmp -o ${myID}_${reference}.bam;
+    done
+  done
+  ```
+
+- Coverage and alignment statistics were obtained using Samtools flagstat v1.7 (Li et al. 2009) for the complete genome or separately for each of the 11 chromosomes in each reference.
+  ```
+  #multiple ${myID}_${reference}.bam files
+  for file in *bam; do
+    samtools flagstat ${file} > stats_${file}.txt
+  done
+  ```
+
+- The “relative averaged alignment” (RAA) is a normalised percentage of properly paired reads in a sample and reference that accounts for variation in sample quality (PCR duplications, DNA quality, etc) and differences in the genetic distance between varieties and the reference (reference bias). RAA was calculated by dividing the percentage of properly paired reads from a sample in a reference by a weight factor. The weight factor was obtained by averaging the ratios in each of the reference genomes between the properly paired reads in the sample and variety cluster. RAA per chromosome was similarly calculated except for each chromosome's alignment statistics instead of the total genome.
 
 
 ## Code used in the paper [citation TBA]
