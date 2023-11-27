@@ -6,7 +6,7 @@ This repository contains the code used in the analysis of our paper Higgins et a
 **We developed two novel scalable alignment-based methods, named Relative Averaged Alignment (RAA) and Relative Coverage (RC), to infer subgenome composition (AA, AAB, etc.) and interspecific recombination.** 
 
 
-# Use and Cite: How to obtain help
+### Use and Cite: How to obtain help
 
 Please reuse our code and ideas. If you use anything in this repository, please cite: Higgins et al. [citation TBA]
 
