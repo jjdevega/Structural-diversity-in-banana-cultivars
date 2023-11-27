@@ -22,6 +22,7 @@ The paper's code is organised into two subfolders:
 
 The code is uploaded as it is, and will require changes to adapt to your needs.
 
+------------------------
 
 # Go bananas! Straight-forward detection of introgressions from BAM files (+ evidence the methods work)
 
