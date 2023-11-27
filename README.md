@@ -199,7 +199,8 @@ We established a new method, called RAA, by quantifying the normalised relative 
   ```
 
 
-- (optional) Normalise percentage of mapped read pairs to account for the genetic distance of different subpopulations to the reference. Then, the percentage of properly mapped read-pairs is normalised by dividing it by the average of the ratios in the same genetic cluster and references.
+- Let's plot it, but before we will normalise percentage of mapped read pairs to account for the genetic distance of different subpopulations to the reference. For that, the percentage of properly mapped read-pairs is normalised by the average from the ratios in the same genetic cluster and references.
+- -  The “relative averaged alignment” (RAA) is a normalised percentage of properly paired reads in a sample and reference that accounts for variation in sample quality (PCR duplications, DNA quality, etc) and differences in the genetic distance between varieties and the reference (reference bias). RAA was calculated by dividing the percentage of properly paired reads from a sample in a reference by a weight factor. The weight factor was obtained by averaging the ratios in each reference genome between the properly paired reads in the sample and variety cluster. RAA per chromosome was similarly calculated except for each chromosome's alignment statistics instead of the total genome.
   ```
   #R
   AA <- read.csv("AA_align_stats.csv")
@@ -209,7 +210,8 @@ We established a new method, called RAA, by quantifying the normalised relative 
 
   cavendish <- subset(tog,tog$group == "Cavendish")
 
-  #calculate weight to normalise with by firstly normalising by referece=by column within the genomic group, then calcualting the average of the referneces/columns
+  #1/NORMALISE
+  #calculate the weight to normalise with by firstly normalising by referece=by column within the genomic group, then calculating the average of the references/columns
   cavendish$normAA <- cavendish$AA/mean(cavendish$AA)
   cavendish$normBB<- cavendish$BB/mean(cavendish$BB)
   cavendish$normSS <- cavendish$SS/mean(cavendish$SS)
@@ -220,12 +222,11 @@ We established a new method, called RAA, by quantifying the normalised relative 
   cavendish$BBn <- cavendish$BB/cavendish$nMean
   cavendish$SSn <- cavendish$SS/cavendish$nMean
 
-  #prepare dataset for ggplot
+  #2/PLOT
   cav <- cavendish %>% select(ID,genetic_group,AAn,BBn,SSn)
   cav <- melt(cav)
   colnames(cav) <- c("ID","group","reference_genome","pp")
 
-  #plot
   ggplot(cav,aes(ID,pp)) +
   geom_line(col = "grey60") +
   geom_point(aes(colour=reference_genome)) +
@@ -236,7 +237,7 @@ We established a new method, called RAA, by quantifying the normalised relative 
 
   ```
 
-  NOTE: The “relative averaged alignment” (RAA) is a normalised percentage of properly paired reads in a sample and reference that accounts for variation in sample quality (PCR duplications, DNA quality, etc) and differences in the genetic distance between varieties and the reference (reference bias). RAA was calculated by dividing the percentage of properly paired reads from a sample in a reference by a weight factor. The weight factor was obtained by averaging the ratios in each reference genome between the properly paired reads in the sample and variety cluster. RAA per chromosome was similarly calculated except for each chromosome's alignment statistics instead of the total genome.
+ 
   
 
 
