@@ -61,19 +61,100 @@ We used comparisons of read depth, which we called Relative Coverage, to to iden
   
 - BAM files were sorted and duplicated reads were removed. Only uniquely mapped reads were retained by excluding reads with the tags 'XA:Z:' and 'SA:Z:', and further filtered to retain only properly mapped paired reads (-f 0x2).
 
+  ```
+  for file in *.bam; do
+    #samtools-1.7
+    samtools view -h ${file} | grep -v -e 'XA:Z:' -e 'SA:Z:' | samtools view -h -f 0x2 | samtools view -b > ${file}_unique.bam
+  done
+  ```
+
 - BEDtools genomeCoverageBed with the alignments from each sample (BAM input) to obtain a Bedgraph file for each sample.
+
+  ```
+  samtools faidx AB.fa
+  cat AB.fa.fai | awk '{print $1 "\t" $2}' > AB.chr_lenghts.txt
+
+  for file in *_unique.bam; do
+    #bedtools-2.24.0
+    genomeCoverageBed -bg -split -ibam ${file} -g AB.chr_lenghts.txt > ${file}.bedgraph
+  done;
+
+  ```
 - BEDtools map to obtain the median of the read coverage or read depth values in the positions within a given 100 Kbp window in the concatenated reference
 
   ```
-  
+  bedtools makewindows -g AB.chr_lenghts.txt -w 100000 > AB_windows100kb.bed
   
   for file in *.bedgraph; do
+    #bedtools-2.24.0
     bedtools map -a AB_windows100kb.bed -b ${file} -c 4 -o median > ${file}_median_cov.txt
   done
-  
-- All-vs-all every 100 Kbp windows in the A-genome and B-genome were aligned to each other using minimap2 v2.22 (-x asm10) to identify homologous windows
-- Plot using R and ggplot
+  ```
 
+- All-vs-all every 100 Kbp windows in the A-genome and B-genome were aligned to each other using minimap2 v2.22 (-x asm10) to identify homologous windows for plotting
+  ```
+  #bedtools-2.26.0
+  #minimap2-2.22
+
+  bedtools getfasta -fi AA_renamed.fa -bed AB_windows100kb.bed > AA_100kb.fasta
+  bedtools getfasta -fi BB_renamed.fa -bed AB_windows100kb.bed > BB_100kb.fasta
+
+  minimap2 -x asm10 AA_100kb.fasta BB_100kb.fasta | sort -k1,1 -k11,11nr | awk '!x[$1]++' > BBquery_AAtarget.paf
+
+  minimap2 -x asm10 BB_100kb.fasta AA_100kb.fasta | sort -k1,1 -k11,11nr | awk '!x[$1]++' > AAquery_BBtarget.paf
+  ```
+
+- Plot Relative Coverage (RC) using R and ggplot
+  ```
+  library("RColorBrewer")
+  library("ggplot2")
+  library(dplyr)
+  library(tidyr)
+  library(stringr)
+
+  #READ THE OUTPUT FROM BEDTOOLS MAP, NORMALISE IT FOR EACH SUBGENOME, 
+  #AND TRANSFORM ONE OF SUBGENOME AS NEGATIVE VALUES TO PLOT BELOW
+  all<- read.delim ("hybrid1_unique.bam.bedgraph_median_cov.txt", header = FALSE)
+  colnames(all) <- c("chrom","start","end","cov")
+
+  all$cov <- as.numeric(all$cov)
+  all$cov[is.na(all$cov)] <- 1
+
+
+  AAchr<- all %>% filter(grepl('AA_chr', chrom)) %>% mutate(chrom = str_replace(chrom,"AA_chr","chr"))>
+  AA_chr$covNormByMean <- AA_chr$cov/mean(AA_chr$cov)  #normalise by dividing by the total average
+
+  BBchr<- all %>% filter(grepl('BB_chr', chrom)) %>% mutate(chrom = str_replace(chrom,"BB_chr","chr"))>
+  BB_chr$covNormByMean <- BB_chr$cov/mean(BB_chr$cov)  #normalise by dividing by the total average
+
+  make.negative <- function(x) -1*abs(x) #make all BB negative for plotting
+  BBchr.negative <- cbind(BBchr,"cov_neg" = make.negative(BB_chr$covNormByMean))
+
+  #READ THE OUTPUT FROM MINIMAP
+  minimap <- read.delim("BB_100kbwindows-over-AAv4.longest_alignmentotal.paf", header=F)
+  minimap <- minimap[,c(1,6,8,9)]
+  colnames(minimap) <- c("uniqID","inAA_chr","inAA_start","inAA_stop")
+  
+  
+  #join left both dataframes
+  #create UNIQid field needed for join() in bed format, as chr:startbp-stopbp
+  BBchr.negative$uniqID <- paste0(BBchr.negative$chrom,":",BBchr.negative$start,"-",BBchr.negative$end)
+  BBchr.negative.join <- merge(x=BBchr.negative, y=minimap, by="uniqID", all.x = FALSE) #false to ignore BBs without AA homologous
+
+  #PLOT
+  AA_chr$facet <- Achr01$chrom
+  BBchr.negative.join$facet <- BBchr.negative.join$inAA_chr
+
+  ggplot() + geom_bar(data=Achr01,aes(x=start,y=covNormByMean), stat = "identity",color="dodgerblue") +
+  geom_bar(data=Bchr01negJOIN,aes(x=inAA_start,y=cov_neg), stat = "identity",color="firebrick3") + 
+  coord_cartesian(ylim = c(-2,3)) + theme(axis.text = element_text(size = 5)) + 
+  geom_hline(yintercept=0, linetype="solid", color = "gray40") +
+  geom_hline(yintercept=c(0.5,1,1.5,2), linetype="solid", color = "gray30", alpha=0.3) +
+  geom_hline(yintercept=c(-0.5,-1,-1.5,-2), linetype="solid", color = "gray30", alpha=0.3) +
+  facet_wrap(~facet,ncol=1,strip.position = "right") +
+  theme_classic()
+
+  ```
 
   
 NOTE: When the sequence is equal between the two ancestral genomes (e.g. no sequence divergence between A and B ancestors), some reads mapping over the conserved sequences can be assigned to the incorrect donor, so generating a background signal. On average, over a 100Kb window, there is plenty of variation between the references to distinguish background noise from the proportion of mapping reads evaluated, so it does not affect the method significantly. 
