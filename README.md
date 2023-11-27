@@ -61,7 +61,17 @@ We established a new method, called RAA, by quantifying the normalised relative 
 
 
 - Preprocessing reads to obtained clean trimmed reads, then align with BWA-MEM, using the options -M and -k 35 them to **THE CONCATENATED REFERENCE WITH THE ANCESTORS** (i.e. one reference Fasta from the concatenation of both ancestors Fasta). Chrs names were renamed to indicate origin, e.g. AA_chr1, BB_chr1, etc.
+```
+cat AA.fa BB.fa > AABB.fa
+bwa index AABB.fa AABB.fa
+for myID in $(sample_list.txt); do
+bwa mem -M -k 35 -R "@RG\tID:${myID}\tSM:${myID}" -t 1 AABB.fa \
+ <(gzip -dc ${myID}/basic/*_R1_val_1.fq.gz) <(gzip -dc ${myID}/basic/*_R2_val_2.fq.gz) \
+| samtools view -@ 1 -b -S -h - | samtools sort -@ 1 -T ${myID}.tmp -o ${myID}_AABB_sort.bam;
+done
+```
 - BAM files were sorted and duplicated reads were removed. Only uniquely mapped reads were retained by excluding reads with the tags 'XA:Z:' and 'SA:Z:', and further filtered to retain only properly mapped paired reads (-f 0x2).
+
 - BEDtools genomeCoverageBed with the alignments from each sample (BAM input) to obtain a Bedgraph file for each sample.
 - BEDtools map to obtain the median of the read coverage or read depth values in the positions within a given 100 Kbp window in the concatenated reference
 - All-vs-all every 100 Kbp windows in the A-genome and B-genome were aligned to each other using minimap2 v2.22 (-x asm10) to identify homologous windows
