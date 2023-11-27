@@ -157,7 +157,7 @@ We used comparisons of read depth, which we called Relative Coverage, to to iden
 NOTE: When the sequence is equal between the two ancestral genomes (e.g. no sequence divergence between A and B ancestors), some reads mapping over the conserved sequences can be assigned to the incorrect donor, so generating a background signal. On average, over a 100Kb window, there is plenty of variation between the references to distinguish background noise from the proportion of mapping reads evaluated, so it does not affect the method significantly. 
 
 
-## relative averaged alignment (RAA): Step by step
+## Relative averaged alignment (RAA): Step by step
 We established a new method, called RAA, by quantifying the normalised relative alignment from each accession to three reference banana genomes, which are representative of the A, B and S genome donors. We called this normalised alignment metric “Relative averaged alignment” (RAA). The RAA accounts for the technical variation between samples and reference bias, ie. the phylogenetic distance between a variety and a genome reference. 
 
 
@@ -174,15 +174,29 @@ We established a new method, called RAA, by quantifying the normalised relative 
   done
   ```
 
-- Coverage and alignment statistics were obtained using Samtools flagstat v1.7 (Li et al. 2009) for the complete genome or separately for each of the 11 chromosomes in each reference.
+- Obtain alignment statistics using Samtools flagstat v1.7 (Li et al. 2009) for the complete genome or separately for each of the 11 chromosomes in each reference.
   ```
   #multiple ${myID}_${reference}.bam files
   for file in *bam; do
-    samtools flagstat ${file} > stats_${file}.txt
+    samtools flagstat ${file} > ${file}.stats.txt
+  done  
+  ```
+
+- For each statistics file extract the name and percentage of properly paired read pairs
+  ```
+  for i in *bam.stats.txt; do
+    echo ${i/.bam.stats.txt} $(cat ${i} | grep 'properly paired' | tr '(' '\t' | tr '%' '\t' | cut -f2)
   done
   ```
 
-- The “relative averaged alignment” (RAA) is a normalised percentage of properly paired reads in a sample and reference that accounts for variation in sample quality (PCR duplications, DNA quality, etc) and differences in the genetic distance between varieties and the reference (reference bias). RAA was calculated by dividing the percentage of properly paired reads from a sample in a reference by a weight factor. The weight factor was obtained by averaging the ratios in each of the reference genomes between the properly paired reads in the sample and variety cluster. RAA per chromosome was similarly calculated except for each chromosome's alignment statistics instead of the total genome.
+
+- (optional) Normalise: The “relative averaged alignment” (RAA) is a normalised percentage of properly paired reads in a sample and reference that accounts for variation in sample quality (PCR duplications, DNA quality, etc) and differences in the genetic distance between varieties and the reference (reference bias). RAA was calculated by dividing the percentage of properly paired reads from a sample in a reference by a weight factor. The weight factor was obtained by averaging the ratios in each reference genome between the properly paired reads in the sample and variety cluster. RAA per chromosome was similarly calculated except for each chromosome's alignment statistics instead of the total genome.
+
+-  Plot
+  ```
+  
+  ```
+
 
 
 ## Code used in the paper [citation TBA]
