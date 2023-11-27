@@ -46,6 +46,7 @@ By contrast, we believe these alignment-based methods (RAA and Relative Coverage
 
 
 
+------------------------
 
 ## Relative Coverage (RC): Step by step
 
@@ -166,6 +167,12 @@ We used comparisons of read depth, which we called Relative Coverage, to to iden
   
 NOTE: When the sequence is equal between the two ancestral genomes (e.g. no sequence divergence between A and B ancestors), some reads mapping over the conserved sequences can be assigned to the incorrect donor, so generating a background signal. On average, over a 100Kb window, there is plenty of variation between the references to distinguish background noise from the proportion of mapping reads evaluated, so it does not affect the method significantly. 
 
+
+
+
+
+
+------------------------
 
 ## Relative averaged alignment (RAA): Step by step
 We established a new method, called RAA, by quantifying the normalised relative alignment from each accession to three reference banana genomes, which are representative of the A, B and S genome donors. We called this normalised alignment metric “Relative averaged alignment” (RAA). The RAA accounts for the technical variation between samples and reference bias, ie. the phylogenetic distance between a variety and a genome reference. 
