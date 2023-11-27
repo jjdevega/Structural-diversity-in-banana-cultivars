@@ -6,18 +6,20 @@ This repository contains the code used in the analysis of our paper Higgins et a
 **We developed two novel scalable alignment-based methods, named Relative Averaged Alignment (RAA) and Relative Coverage (RC), to infer subgenome composition (AA, AAB, etc.) and interspecific recombination.** 
 
 
-## Go bananas! Straight-forward results (+ evidence the methods work)
+# Use and Cite: How to obtain help
+
+Please reuse our code and ideas. If you use anything in this repository, please cite: Higgins et al. [citation TBA]
+
+If you need help to use or adapt any of these scripts, or to develop your own code on these method ideas, please open an issue in this repository. This will help to create a FAQ that will be of benefit to others.
+
+
+
+## Go bananas! Straight-forward detection of introgressions from BAM files (+ evidence the methods work)
 
 In Higgins et al. [citation TBA] we demonstrated RAA and Relative Coverage can *identify subgenome composition and introgressions* with similar results to more complex approaches that rely on SNP databases, which require sequencing a panel of wild ancestors to find private SNPs. Our methods can be used without a panel of ancestors as rely on alignment from the hybrids or allopolyploids in the ancestor reference genomes.
 
 [images and plots to be added here]
 
-
-## Use and Cite: How to obtain help
-
-Please reuse our code and ideas. If you use anything in this repository, please cite: Higgins et al. [citation TBA]
-
-If you need help to use or adapt any of these scripts, or to develop your own code on these method ideas, please open an issue in this repository. This will help to create a FAQ that will be of benefit to others.
 
 
 
@@ -32,6 +34,43 @@ By contrast, we believe these alignment-based methods (RAA and Relative Coverage
 - On the other hand, the main disadvantage of Relative Coverage is it requires experience to distinguish introgressions in low donor ratios.
 
 
+
+
+
+## Relative Coverage (RC): Protocol
+
+
+We used comparisons of read depth, which we called Relative Coverage, to identify introgressions. 
+
+- Preprocessing reads to obtain clean trimmed reads, then align each hybrid to each ancestor reference, one at the time, with BWA-MEM
+  ```
+  cat A_ancestor.fa B_ancestor.fa > AB.fa
+  
+  bwa index AABB.fa AABB.fa
+  
+  for myID in $(hybrids_list.txt); do
+    bwa mem -M -k 35 -R "@RG\tID:${myID}\tSM:${myID}" -t 1 AB.fa \
+     <(gzip -dc ${myID}/basic/*_R1_val_1.fq.gz) <(gzip -dc ${myID}/basic/*_R2_val_2.fq.gz) \
+    | samtools view -@ 1 -b -S -h - | samtools sort -@ 1 -T ${myID}.tmp -o ${myID}_AB_sort.bam;
+  done;
+
+  
+  ```
+
+## RAA: Protocol
+We established a new method, called RAA, by quantifying the normalised relative alignment from each accession to three reference banana genomes, which are representative of the A, B and S genome donors. We called this normalised alignment metric “Relative averaged alignment” (RAA). The RAA accounts for the technical variation between samples and reference bias, ie. the phylogenetic distance between a variety and a genome reference. 
+
+
+- Preprocessing reads to obtained clean trimmed reads, then align with BWA-MEM, using the options -M and -k 35 them to **THE CONCATENATED REFERENCE WITH THE ANCESTORS** (i.e. one reference Fasta from the concatenation of both ancestors Fasta). Chrs names were renamed to indicate origin, e.g. AA_chr1, BB_chr1, etc.
+
+- BAM files were sorted and duplicated reads were removed. Only uniquely mapped reads were retained by excluding reads with the tags 'XA:Z:' and 'SA:Z:', and further filtered to retain only properly mapped paired reads (-f 0x2).
+
+- BEDtools genomeCoverageBed with the alignments from each sample (BAM input) to obtain a Bedgraph file for each sample.
+- BEDtools map to obtain the median of the read coverage or read depth values in the positions within a given 100 Kbp window in the concatenated reference
+- All-vs-all every 100 Kbp windows in the A-genome and B-genome were aligned to each other using minimap2 v2.22 (-x asm10) to identify homologous windows
+- Plot using R and ggplot
+
+
 ## Code used in the paper [citation TBA]
 The paper's code is organised into two subfolders:
 
@@ -41,41 +80,4 @@ The paper's code is organised into two subfolders:
 
 The code is uploaded as it is, and will require changes to adapt to your needs.
 
-
-## Relative Coverage (RC): Protocol
-
-
-We used comparisons of read depth, which we called Relative Coverage, to identify introgressions. 
-
-- Preprocessing reads to obtain clean trimmed reads, then align each hybrid to each ancestor reference, one at the time, with BWA-MEM
-```
-for sample in $(cat sample_list.txt); do
-  for reference in $(cat reference_list.txt); do
-    bwa mem ref.index sample_r1.fq [sample_r2.fq] | samtools sort > alignments_sample_ref.bam
-  done
-done
-```
-
-## RAA: Protocol
-We established a new method, called RAA, by quantifying the normalised relative alignment from each accession to three reference banana genomes, which are representative of the A, B and S genome donors. We called this normalised alignment metric “Relative averaged alignment” (RAA). The RAA accounts for the technical variation between samples and reference bias, ie. the phylogenetic distance between a variety and a genome reference. 
-
-
-- Preprocessing reads to obtained clean trimmed reads, then align with BWA-MEM, using the options -M and -k 35 them to **THE CONCATENATED REFERENCE WITH THE ANCESTORS** (i.e. one reference Fasta from the concatenation of both ancestors Fasta). Chrs names were renamed to indicate origin, e.g. AA_chr1, BB_chr1, etc.
-```
-cat AA.fa BB.fa > AABB.fa
-bwa index AABB.fa AABB.fa
-for myID in $(sample_list.txt); do
-bwa mem -M -k 35 -R "@RG\tID:${myID}\tSM:${myID}" -t 1 AABB.fa \
- <(gzip -dc ${myID}/basic/*_R1_val_1.fq.gz) <(gzip -dc ${myID}/basic/*_R2_val_2.fq.gz) \
-| samtools view -@ 1 -b -S -h - | samtools sort -@ 1 -T ${myID}.tmp -o ${myID}_AABB_sort.bam;
-done;
-```
-- BAM files were sorted and duplicated reads were removed. Only uniquely mapped reads were retained by excluding reads with the tags 'XA:Z:' and 'SA:Z:', and further filtered to retain only properly mapped paired reads (-f 0x2).
-
-- BEDtools genomeCoverageBed with the alignments from each sample (BAM input) to obtain a Bedgraph file for each sample.
-- BEDtools map to obtain the median of the read coverage or read depth values in the positions within a given 100 Kbp window in the concatenated reference
-- All-vs-all every 100 Kbp windows in the A-genome and B-genome were aligned to each other using minimap2 v2.22 (-x asm10) to identify homologous windows
-- Plot using R and ggplot
-
-
-## Plotting
+## Plotting code used in the paper [citation TBA]
