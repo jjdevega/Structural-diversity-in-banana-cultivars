@@ -13,8 +13,17 @@ Please reuse our code and ideas. If you use anything in this repository, please 
 If you need help to use or adapt any of these scripts, or to develop your own code on these method ideas, please open an issue in this repository. This will help to create a FAQ that will be of benefit to others.
 
 
+## This repository includes the code used in our paper Higgins et al. [citation TBA]
+The paper's code is organised into two subfolders:
 
-## Go bananas! Straight-forward detection of introgressions from BAM files (+ evidence the methods work)
+- Folder Introgression_detection: This subfolder contains the code to obtain and plot the new metrics, called *Relative Averaged Alignment (RAA) and Relative Coverage* starting from BAM alignment files (e.g. from BWA or Bowtie) for each sample.
+
+- Folder Population_structure: SNP calling pipeline (based on BWA, GATK and BCFTOOLS); and bash and R code for Principal Component Analysis, phylogenetic analysis and tree plotting, and bash and R scripts to analyse with STRUCTURE 
+
+The code is uploaded as it is, and will require changes to adapt to your needs.
+
+
+# Go bananas! Straight-forward detection of introgressions from BAM files (+ evidence the methods work)
 
 In Higgins et al. [citation TBA] we demonstrated RAA and Relative Coverage can *identify subgenome composition and introgressions* with similar results to more complex approaches that rely on SNP databases, which require sequencing a panel of wild ancestors to find private SNPs. Our methods can be used without a panel of ancestors as rely on alignment from the hybrids or allopolyploids in the ancestor reference genomes.
 
@@ -234,13 +243,5 @@ We established a new method, called RAA, by quantifying the normalised relative 
 
 
 
-## Code used in the paper [citation TBA]
-The paper's code is organised into two subfolders:
 
-- Folder Introgression_detection: This subfolder contains the code to obtain and plot the new metrics, called *Relative Averaged Alignment (RAA) and Relative Coverage* starting from BAM alignment files (e.g. from BWA or Bowtie) for each sample.
 
-- Folder Population_structure: SNP calling pipeline (based on BWA, GATK and BCFTOOLS); and bash and R code for Principal Component Analysis, phylogenetic analysis and tree plotting, and bash and R scripts to analyse with STRUCTURE 
-
-The code is uploaded as it is, and will require changes to adapt to your needs.
-
-## Plotting code used in the paper [citation TBA]
