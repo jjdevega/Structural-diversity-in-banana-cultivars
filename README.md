@@ -6,7 +6,7 @@ This repository contains the code used in the analysis of our paper Higgins et a
 **We developed two novel scalable alignment-based methods, named Relative Averaged Alignment (RAA) and Relative Coverage (RC), to infer subgenome composition (AA, AAB, etc.) and interspecific recombination.** 
 
 
-## Go bananas! Straight-forward results (evidence the methods work)
+## Go bananas! Straight-forward results (+ evidence the methods work)
 
 In Higgins et al. [citation TBA] we demonstrated RAA and Relative Coverage can *identify subgenome composition and introgressions* with similar results to more complex approaches that rely on SNP databases, which require sequencing a panel of wild ancestors to find private SNPs. Our methods can be used without a panel of ancestors as rely on alignment from the hybrids or allopolyploids in the ancestor reference genomes.
 
@@ -15,9 +15,9 @@ In Higgins et al. [citation TBA] we demonstrated RAA and Relative Coverage can *
 
 ## Use and Cite: How to obtain help
 
-Please reuse our code and ideas. If you use anything in this repository please cite: Higgins et al. [citation TBA]
+Please reuse our code and ideas. If you use anything in this repository, please cite: Higgins et al. [citation TBA]
 
-If you need help to use or adapt any of these scripts or to develop your own code on these method ideas, please open a issue in this repository. This will help to create a FAQ of benefit to others.
+If you need help to use or adapt any of these scripts, or to develop your own code on these method ideas, please open an issue in this repository. This will help to create a FAQ that will be of benefit to others.
 
 
 
@@ -27,7 +27,7 @@ These approaches are costly, both economically (sequencing costs) and time (comp
 
 By contrast, we believe these alignment-based methods (RAA and Relative Coverage) offer several advantages over other methods. 
 - The alignment-based methods do not require sequencing a large number of donors to find private SNPs exclusive to each donor gene pools.
-- - The alignment-based methods can be used in closely related gene pools, even within one single species, where private SNPs can be hard to find because of recent divergence. This has allowed us to identify introgressions between indica and japonica rice (Higgins et al. 2021), or between Andean and Mesoamerican beans (in prep).
+- The alignment-based methods can be used in closely related gene pools, even within one single species, where private SNPs can be hard to find because of recent divergence. This has allowed us to identify introgressions between indica and japonica rice (Higgins et al. 2021), or between Andean and Mesoamerican beans (in prep).
 - The alignment-base methods can be easily scaled up, as they do not require SNP calling and analysis, allowing to quick incorporation in the studies of new diversity panels and the increasing number of long-read genome assemblies.
 - On the other hand, the main disadvantage of Relative Coverage is it requires experience to distinguish introgressions in low donor ratios.
 
@@ -35,9 +35,9 @@ By contrast, we believe these alignment-based methods (RAA and Relative Coverage
 ## Code used in the paper [citation TBA]
 The paper's code is organised into two subfolders:
 
-- Introgression_detection: This subfolder contains the code to obtain and plot the new metrics, called *Relative Averaged Alignment (RAA) and Relative Coverage* starting from BAM alignment files (e.g. from BWA or Bowtie) for each sample.
+- Folder Introgression_detection: This subfolder contains the code to obtain and plot the new metrics, called *Relative Averaged Alignment (RAA) and Relative Coverage* starting from BAM alignment files (e.g. from BWA or Bowtie) for each sample.
 
-- Population_structure: SNP calling pipeline (based on BWA, GATK and BCFTOOLS); and bash and R code for Principal Component Analysis, phylogenetic analysis and tree plotting, and bash and R scripts to analyse with STRUCTURE 
+- Folder Population_structure: SNP calling pipeline (based on BWA, GATK and BCFTOOLS); and bash and R code for Principal Component Analysis, phylogenetic analysis and tree plotting, and bash and R scripts to analyse with STRUCTURE 
 
 The code is uploaded as it is, and will require changes to adapt to your needs.
 
